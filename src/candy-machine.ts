@@ -6,15 +6,15 @@ import {
   Token,
 } from "@solana/spl-token";
 
-export const CANDY_MACHINE_PROGRAM = new anchor.web3.PublicKey(
+export var CANDY_MACHINE_PROGRAM = new anchor.web3.PublicKey(
   "cndyAnrLdpjq1Ssp1z8xxDsB8dxe7u4HL5Nxi2K5WXZ"
 );
 
-const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new anchor.web3.PublicKey(
+var SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new anchor.web3.PublicKey(
   "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
 );
 
-const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
+var TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
   "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
 );
 
@@ -32,7 +32,7 @@ interface CandyMachineState {
   goLiveDate: Date,
 }
 
-export const awaitTransactionSignatureConfirmation = async (
+export var awaitTransactionSignatureConfirmation = async (
   txid: anchor.web3.TransactionSignature,
   timeout: number,
   connection: anchor.web3.Connection,
@@ -83,7 +83,7 @@ export const awaitTransactionSignatureConfirmation = async (
       // eslint-disable-next-line no-loop-func
       (async () => {
         try {
-          const signatureStatuses = await connection.getSignatureStatuses([
+          var signatureStatuses = await connection.getSignatureStatuses([
             txid,
           ]);
           status = signatureStatuses && signatureStatuses.value[0];
@@ -121,13 +121,13 @@ export const awaitTransactionSignatureConfirmation = async (
   return status;
 }
 
-/* export */ const createAssociatedTokenAccountInstruction = (
+/* export */ var createAssociatedTokenAccountInstruction = (
   associatedTokenAddress: anchor.web3.PublicKey,
   payer: anchor.web3.PublicKey,
   walletAddress: anchor.web3.PublicKey,
   splTokenMintAddress: anchor.web3.PublicKey
 ) => {
-  const keys = [
+  var keys = [
     { pubkey: payer, isSigner: true, isWritable: true },
     { pubkey: associatedTokenAddress, isSigner: false, isWritable: true },
     { pubkey: walletAddress, isSigner: false, isWritable: false },
@@ -151,32 +151,32 @@ export const awaitTransactionSignatureConfirmation = async (
   });
 }
 
-export const getCandyMachineState = async (
+export var getCandyMachineState = async (
   anchorWallet: anchor.Wallet,
   candyMachineId: anchor.web3.PublicKey,
   connection: anchor.web3.Connection,
 ): Promise<CandyMachineState> => {
-  const provider = new anchor.Provider(connection, anchorWallet, {
+  var provider = new anchor.Provider(connection, anchorWallet, {
     preflightCommitment: "recent",
   });
 
-  const idl = await anchor.Program.fetchIdl(
+  var idl = await anchor.Program.fetchIdl(
     CANDY_MACHINE_PROGRAM,
     provider
   );
 
-  const program = new anchor.Program(idl, CANDY_MACHINE_PROGRAM, provider);
-  const candyMachine = {
+  var program = new anchor.Program(idl, CANDY_MACHINE_PROGRAM, provider);
+  var candyMachine = {
     id: candyMachineId,
     connection,
     program,
   }
 
-  const state: any = await program.account.candyMachine.fetch(candyMachineId);
+  var state: any = await program.account.candyMachine.fetch(candyMachineId);
 
-  const itemsAvailable = state.data.itemsAvailable.toNumber();
-  const itemsRedeemed = state.itemsRedeemed.toNumber();
-  const itemsRemaining = itemsAvailable - itemsRedeemed;
+  var itemsAvailable = state.data.itemsAvailable.toNumber();
+  var itemsRedeemed = state.itemsRedeemed.toNumber();
+  var itemsRemaining = itemsAvailable - itemsRedeemed;
 
   let goLiveDate = state.data.goLiveDate.toNumber();
   goLiveDate = new Date(goLiveDate * 1000);
@@ -197,7 +197,7 @@ export const getCandyMachineState = async (
   };
 }
 
-const getMasterEdition = async (
+var getMasterEdition = async (
   mint: anchor.web3.PublicKey
 ): Promise<anchor.web3.PublicKey> => {
   return (
@@ -213,7 +213,7 @@ const getMasterEdition = async (
   )[0];
 };
 
-const getMetadata = async (
+var getMetadata = async (
   mint: anchor.web3.PublicKey
 ): Promise<anchor.web3.PublicKey> => {
   return (
@@ -228,7 +228,7 @@ const getMetadata = async (
   )[0];
 };
 
-const getTokenWallet = async (
+var getTokenWallet = async (
   wallet: anchor.web3.PublicKey,
   mint: anchor.web3.PublicKey
 ) => {
@@ -240,19 +240,19 @@ const getTokenWallet = async (
   )[0];
 };
 
-export const mintOneToken = async (
+export var mintOneToken = async (
   candyMachine: CandyMachine,
   config: anchor.web3.PublicKey, // feels like this should be part of candyMachine?
   payer: anchor.web3.PublicKey,
   treasury: anchor.web3.PublicKey,
 ): Promise<string> => {
-  const mint = anchor.web3.Keypair.generate();
-  const token = await getTokenWallet(payer, mint.publicKey);
-  const { connection, program } = candyMachine;
-  const metadata = await getMetadata(mint.publicKey);
-  const masterEdition = await getMasterEdition(mint.publicKey);
+  var mint = anchor.web3.Keypair.generate();
+  var token = await getTokenWallet(payer, mint.publicKey);
+  var { connection, program } = candyMachine;
+  var metadata = await getMetadata(mint.publicKey);
+  var masterEdition = await getMasterEdition(mint.publicKey);
 
-  const rent = await connection.getMinimumBalanceForRentExemption(
+  var rent = await connection.getMinimumBalanceForRentExemption(
     MintLayout.span
   );
 
@@ -307,10 +307,10 @@ export const mintOneToken = async (
   });
 }
 
-export const shortenAddress = (address: string, chars = 4): string => {
+export var shortenAddress = (address: string, chars = 4): string => {
   return `${address.slice(0, chars)}...${address.slice(-chars)}`;
 };
 
-const sleep = (ms: number): Promise<void> => {
+var sleep = (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
